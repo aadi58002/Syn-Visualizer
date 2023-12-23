@@ -1482,6 +1482,8 @@ dependencies = [
  "leptos",
  "proc-macro2",
  "syn 2.0.42",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]

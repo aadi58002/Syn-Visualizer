@@ -8,5 +8,15 @@
     <link data-trunk rel="css" href="src/main.css"/>
 </head>
 <body>
+  <div id="foo"></div>
+
+  <script type="module">
+    import { codeToHtml } from 'https://esm.run/shikiji@0.8.0'
+    const foo = document.getElementById('foo')
+    foo.innerHTML = await codeToHtml('console.log("Hi, Shiki on CDN :)")', {
+      lang: 'js',
+      theme: 'rose-pine'
+    })
+  </script>
 </body>
 </html>
