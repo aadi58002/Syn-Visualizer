@@ -7,24 +7,25 @@ use leptos::*;
 #[component]
 fn App() -> impl IntoView {
     view! {
-        <h2>"Syn Visualizer"</h2>
+        <h2 class="title">"Syn Visualizer"</h2>
         <ControlledComponent/>
     }
 }
 
-fn get_ast_value(input: TokenStream) -> Result<DeriveInput, syn::Error> {
-    parse2::<DeriveInput>(input)
-}
-
 #[component]
 fn ControlledComponent() -> impl IntoView {
-    let (name, set_name) = create_signal("struct Testing{name: usize,}".to_string());
+    let (name, set_name) = create_signal(
+        "struct Testing {
+    name: Vec<usize>,
+}"
+        .to_string(),
+    );
     let get_ast = move || match name().parse::<TokenStream>() {
-        Ok(name) => match get_ast_value(name) {
+        Ok(name) => match parse2::<DeriveInput>(name) {
             Ok(tree) => {
                 let mut temp = String::new();
                 write!(&mut temp, "{tree:#?}").unwrap();
-                leptos::logging::log!("{}",temp);
+                leptos::logging::log!("{}", temp);
                 temp
             }
 
@@ -34,14 +35,16 @@ fn ControlledComponent() -> impl IntoView {
     };
 
     view! {
-        <textarea type="text"
-            on:input=move |ev| {
-                set_name(event_target_value(&ev));
-            }
-            prop:cols=100
-            prop:rows=30
-        >{name}</textarea>
-        <p>{get_ast}</p>
+        <div class="combined_container">
+            <textarea type="text"
+                on:input=move |ev| {
+                    set_name(event_target_value(&ev));
+                }
+                prop:cols=100
+                prop:rows=30
+            >{name}</textarea>
+            <p>{get_ast}</p>
+        </div>
     }
 }
 
